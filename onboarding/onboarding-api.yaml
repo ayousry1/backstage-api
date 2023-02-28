@@ -4,7 +4,7 @@ info:
   description: |-
     This microservice is responsible for managing users and performing opersions on the users including (onboarding,authenticating users)
   contact:
-    email: aanahas@alinma.com 
+    email: ayousry@alinma.com 
   version: 1.0.0
 tags:
   - name: onboarding
@@ -37,7 +37,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseError'
-        '417':
+        '418':
           description: Invalid Company type error code > CR01
           content:
             application/json:
