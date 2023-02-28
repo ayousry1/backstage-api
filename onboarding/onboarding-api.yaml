@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: Swagger Onboarding Management - OpenAPI 3.0
+  description: |-
+    This microservice is responsible for managing users and performing opersions on the users including (onboarding,authenticating users)
+  contact:
+    email: aanahas@alinma.com 
+  version: 1.0.0
+tags:
+  - name: onboarding
+    description: responsible for the onboarding including all the steps (CR,business details, personal details, password,)
+paths:
+  /onboarding/v1:
+    post:
+      tags:
+        - onboarding
+      summary: returns random number to be displayed after validating the cr info 
+      description: ''
+      operationId: onboarding
+      requestBody:
+        description: cr number
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingModel'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingResponse'
+        '419':
+          description: Expired CR error code > CR00
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '417':
+          description: Invalid Company type error code > CR01
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '404':
+          description: CR not found error code > CR02
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '400':
+          description: Invalid CR format error code > CR03
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '424':
+          description: Integration exception error code > INT00
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '408':
+          description: Integration timeout error code > INT01
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'          
+        '500':
+          description: Internal Server Error
+  /onboarding/v1/verification/status:
+     post:
+      tags:
+        - onboarding
+      summary: returns the cr and personal detailes of the business owner after the authentication
+      description: ''
+      operationId: onboarding/verification/status
+      requestBody:
+        description: transaction id (reference)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationInquiryModel'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponseModel'
+        '419':
+          description: Expired CR error code > CR00
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '417':
+          description: Multi owner CR error code > CR01
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '404':
+          description: CR not found error code > CR02
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '400':
+          description: Invalid CR format error code > CR03
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '424':
+          description: Integration exception error code > INT00
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        '408':
+          description: Integration timeout error code > INT01
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'          
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    AuthenticationResponseModel:
+      type: object
+      properties:
+        crDetails:
+          type: object
+          properties:
+            name:
+              type: string
+            commercialRegisteration:
+              type: string
+            address:
+              type: string
+              example: "King Fahd Rd, Al Olaya, Riyadh 12214, Saudi Arabia"
+            mobile:
+              type: string
+              example: "+966 *******"
+            email:
+              type: string
+              example: sd@gmail.com
+            phoneNumber:
+              type: string
+              example: "+966 *******"
+        userDetails:
+          type: object
+          properties:
+            gender:
+              type: string
+              example: m or f
+            name:
+              type: string
+              example: "ahmed yousry"
+            address:
+              type: object
+              properties:
+                city:
+                  type: string
+                  example: "riyadh"
+                streetName:
+                  type: string
+                  example: "olayah"
+                district:
+                  type: string
+                  example: "riyadh"
+                zipCode:
+                  type: integer
+                  example: 123
+                buildingNumber:
+                  type: integer
+                  example: 12
+                additionalNumber:
+                  type: string
+    OnboardingResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          example: 1234
+        random:
+          type: string
+          example: 31
+    OnboardingModel:
+      type: object
+      required:
+        - cr
+      properties:
+        cr:
+          type: string
+          example: 7123456
+    AuthenticationInquiryModel:
+      type: object
+      required:
+        - transactionId
+      properties:
+        transactionId:
+          type: string
+          example: 1234      
+    ApiResponseError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      xml:
+        name: '##default'
